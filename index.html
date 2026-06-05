@@ -4,147 +4,245 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Distance Between Me and Tomorrow</title>
+
 <style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-    margin:0;
-    overflow:hidden;
-    background:#05060a;
-    color:#f2f2f2;
-    font-family: Georgia, serif;
+background:#04050a;
+overflow:hidden;
+font-family:Georgia, serif;
+color:white;
 }
+
 canvas{
-    position:fixed;
-    inset:0;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
 }
+
+#flash{
+position:fixed;
+inset:0;
+background:white;
+opacity:0;
+pointer-events:none;
+z-index:1;
+}
+
+.clock{
+position:fixed;
+top:20px;
+right:20px;
+font-size:18px;
+letter-spacing:2px;
+opacity:.8;
+z-index:5;
+}
+
 .content{
-    position:relative;
-    z-index:2;
-    max-width:800px;
-    margin:auto;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    padding:40px;
+position:relative;
+z-index:3;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:30px;
 }
+
+.box{
+max-width:800px;
+text-align:center;
+}
+
 h1{
-    font-weight:300;
-    letter-spacing:2px;
-    opacity:0;
-    animation:fadeIn 3s forwards;
+font-size:48px;
+margin-bottom:25px;
+font-weight:300;
 }
-#line{
-    font-size:1.15rem;
-    line-height:1.9;
-    white-space:pre-line;
+
+#text{
+font-size:20px;
+line-height:1.9;
+white-space:pre-line;
+min-height:300px;
 }
-.cursor{
-    display:inline-block;
-    animation:blink 1s infinite;
+
+.btn{
+display:inline-block;
+margin-top:30px;
+padding:14px 30px;
+border:1px solid rgba(255,255,255,.3);
+text-decoration:none;
+color:white;
+border-radius:50px;
+transition:.4s;
+backdrop-filter:blur(10px);
 }
-@keyframes blink{50%{opacity:0;}}
-@keyframes fadeIn{to{opacity:1;}}
-.footer{
-    margin-top:40px;
-    opacity:0.5;
-    font-style:italic;
+
+.btn:hover{
+background:rgba(255,255,255,.15);
 }
 </style>
 </head>
+
 <body>
+
+<div id="flash"></div>
 <canvas id="rain"></canvas>
 
+<div class="clock" id="clock"></div>
+
 <div class="content">
+<div class="box">
+
 <h1>The Distance Between Me and Tomorrow</h1>
-<div id="line"></div>
-<div class="footer">A page for the nights that feel heavier than words.</div>
+
+<div id="text"></div>
+
+<a class="btn"
+href="https://open.spotify.com/"
+target="_blank">
+🎵 Play Multo
+</a>
+
+</div>
 </div>
 
 <script>
-const text = `Sometimes I feel as though life continued moving
-while I somehow remained still.
 
-Not trapped.
-Not broken.
+const message = `Sometimes I feel like life never stopped.
 
-Just... left behind.
+Everyone kept moving.
+Everyone kept growing.
 
-People I once walked beside are now far ahead,
-building futures, finding places to belong,
-becoming someone.
+They found their place.
 
-And here I am,
-counting quiet evenings,
-wondering whether anyone notices the distance.
+And somehow...
 
-The hardest loneliness is not the absence of people.
+I remained here.
 
-It is the absence of being understood.
+Not because I wanted to stay.
 
-Every day I tell myself to keep going.
-Every day I do.
+But because every step forward
+felt heavier than the last.
 
-But some nights,
-when the world becomes silent,
-I admit the truth:
+Some nights I stare at the ceiling
+wondering if anyone notices
+how hard I am trying.
 
-I am tired of pretending that being strong
-does not hurt.
+I smile.
+I laugh.
+I answer messages.
 
-If you found this page,
-perhaps you know this feeling too.
+But deep inside,
+there is a version of me
+quietly asking:
 
-And if you do,
+"When will it be my turn?"
 
-I hope tomorrow finds us both.`;
+Maybe tomorrow.
 
-let i=0;
-function type(){
-  if(i<text.length){
-    document.getElementById("line").innerHTML =
-      text.substring(0,i) + '<span class="cursor">|</span>';
-    i++;
-    setTimeout(type,35);
-  }
+I still hope it will be tomorrow.`;
+
+let i = 0;
+
+function typeWriter(){
+if(i < message.length){
+document.getElementById("text").innerHTML += message.charAt(i);
+i++;
+setTimeout(typeWriter,40);
 }
-setTimeout(type,1500);
+}
 
-const c=document.getElementById("rain");
-const ctx=c.getContext("2d");
+setTimeout(typeWriter,1000);
+
+function updateClock(){
+const now = new Date();
+document.getElementById("clock").innerHTML =
+now.toLocaleTimeString();
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+const canvas = document.getElementById("rain");
+const ctx = canvas.getContext("2d");
+
 function resize(){
- c.width=window.innerWidth;
- c.height=window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 }
-resize();
-window.onresize=resize;
 
-let drops=[];
-for(let i=0;i<180;i++){
- drops.push({
-   x:Math.random()*c.width,
-   y:Math.random()*c.height,
-   l:10+Math.random()*20,
-   s:4+Math.random()*6
- });
+resize();
+window.addEventListener("resize",resize);
+
+let rain=[];
+
+for(let i=0;i<250;i++){
+rain.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+l:10+Math.random()*20,
+s:4+Math.random()*8
+});
 }
-function draw(){
- ctx.clearRect(0,0,c.width,c.height);
- ctx.strokeStyle="rgba(180,180,255,0.15)";
- ctx.lineWidth=1;
- drops.forEach(d=>{
-   ctx.beginPath();
-   ctx.moveTo(d.x,d.y);
-   ctx.lineTo(d.x,d.y+d.l);
-   ctx.stroke();
-   d.y+=d.s;
-   if(d.y>c.height){
-      d.y=-20;
-      d.x=Math.random()*c.width;
-   }
- });
- requestAnimationFrame(draw);
+
+function drawRain(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.strokeStyle="rgba(180,180,255,.18)";
+ctx.lineWidth=1;
+
+rain.forEach(r=>{
+
+ctx.beginPath();
+ctx.moveTo(r.x,r.y);
+ctx.lineTo(r.x,r.y+r.l);
+ctx.stroke();
+
+r.y+=r.s;
+
+if(r.y>canvas.height){
+r.y=-20;
+r.x=Math.random()*canvas.width;
 }
-draw();
+
+});
+
+requestAnimationFrame(drawRain);
+}
+
+drawRain();
+
+function lightning(){
+
+const flash=document.getElementById("flash");
+
+flash.style.transition="none";
+flash.style.opacity="0.9";
+
+setTimeout(()=>{
+flash.style.transition=".6s";
+flash.style.opacity="0";
+},100);
+
+let next=Math.random()*12000+5000;
+
+setTimeout(lightning,next);
+}
+
+setTimeout(lightning,7000);
+
 </script>
+
 </body>
 </html>
