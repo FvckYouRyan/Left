@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Left Behind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0c10;
+      --surface: #13141a;
+      --accent: #c9a96e;
+      --muted: #3a3b45;
+      --text: #e8e4dc;
+      --dim: #7a7880;
+      --past: #6e8fc9;
+      --present: #c96e6e;
+      --future: #6ec98f;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── LANDING ── */
+    #landing {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .star-field {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, #1a1c2a 0%, #0b0c10 70%);
+    }
+
+    .star-field::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 10%, rgba(255,255,255,.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 30%, rgba(255,255,255,.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 70%, rgba(255,255,255,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 65%, rgba(255,255,255,.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 90%, rgba(255,255,255,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5%  50%, rgba(255,255,255,.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 60% 45%, rgba(201,169,110,.7) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 35% 35%, rgba(110,143,201,.7) 0%, transparent 100%);
+      animation: twinkle 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0%   { opacity: .6; }
+      100% { opacity: 1; }
+    }
+
+    .landing-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .eyebrow {
+      font-size: .75rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp .8s .3s forwards;
+    }
+
+    .landing-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp .8s .5s forwards;
+    }
+
+    .landing-title em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .landing-sub {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      color: var(--dim);
+      max-width: 440px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp .8s .8s forwards;
+    }
+
+    .btn-start {
+      margin-top: 3rem;
+      display: inline-block;
+      padding: .85rem 2.8rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Lato', sans-serif;
+      font-size: .85rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp .8s 1.1s forwards;
+      transition: color .35s;
+    }
+
+    .btn-start::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .35s ease;
+      z-index: -1;
+    }
+
+    .btn-start:hover { color: var(--bg); }
+    .btn-start:hover::before { transform: scaleX(1); }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: .4;
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--dim), transparent);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── SHARED SECTION STYLES ── */
+    .chapter {
+      min-height: 100vh;
+      padding: 8rem 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .chapter-label {
+      font-size: .7rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      opacity: .5;
+    }
+
+    .chapter-label.past   { color: var(--past); }
+    .chapter-label.present{ color: var(--present); }
+    .chapter-label.future { color: var(--future); }
+
+    .chapter-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 2.5rem;
+    }
+
+    .chapter-heading .accent-past    { color: var(--past); }
+    .chapter-heading .accent-present { color: var(--present); }
+    .chapter-heading .accent-future  { color: var(--future); }
+
+    .chapter p {
+      font-size: 1.05rem;
+      line-height: 1.95;
+      color: #c8c4bc;
+      max-width: 640px;
+      margin-bottom: 1.6rem;
+    }
+
+    /* ── REVEAL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 60px;
+      height: 1px;
+      margin: 3rem 0;
+    }
+
+    .divider.past    { background: var(--past); }
+    .divider.present { background: var(--present); }
+    .divider.future  { background: var(--future); }
+    .divider.gold    { background: var(--accent); }
+
+    /* ── INTERACTIVE: MOOD SELECTOR ── */
+    #present-chapter .mood-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin: 2rem 0;
+    }
+
+    .mood-btn {
+      padding: .55rem 1.4rem;
+      border: 1px solid var(--muted);
+      background: transparent;
+      color: var(--dim);
+      font-family: 'Lato', sans-serif;
+      font-size: .85rem;
+      letter-spacing: .05em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all .25s;
+    }
+
+    .mood-btn:hover,
+    .mood-btn.active {
+      border-color: var(--present);
+      color: var(--present);
+      background: rgba(201,110,110,.08);
+    }
+
+    .mood-response {
+      margin-top: 1.5rem;
+      padding: 1.5rem 2rem;
+      border-left: 2px solid var(--present);
+      background: rgba(201,110,110,.05);
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #c8c4bc;
+      min-height: 80px;
+      transition: all .4s ease;
+    }
+
+    /* ── INTERACTIVE: MEMORY TIMELINE ── */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--past), transparent);
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+      cursor: pointer;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: .4rem;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      border: 1px solid var(--past);
+      background: var(--bg);
+      transition: background .25s;
+    }
+
+    .tl-item:hover::before,
+    .tl-item.open::before {
+      background: var(--past);
+    }
+
+    .tl-year {
+      font-size: .7rem;
+      letter-spacing: .2em;
+      color: var(--past);
+      margin-bottom: .3rem;
+    }
+
+    .tl-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0;
+      transition: color .2s;
+    }
+
+    .tl-item:hover .tl-title { color: var(--past); }
+
+    .tl-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .45s ease, opacity .45s ease;
+      opacity: 0;
+      font-size: .95rem;
+      line-height: 1.8;
+      color: #9a9898;
+      margin-top: 0;
+    }
+
+    .tl-item.open .tl-body {
+      max-height: 200px;
+      opacity: 1;
+      margin-top: .75rem;
+    }
+
+    /* ── INTERACTIVE: LETTER ── */
+    .letter-box {
+      border: 1px solid var(--muted);
+      padding: 2.5rem;
+      position: relative;
+      background: #0f1016;
+    }
+
+    .letter-box::before {
+      content: '"';
+      font-family: 'Playfair Display', serif;
+      font-size: 6rem;
+      color: var(--accent);
+      opacity: .1;
+      position: absolute;
+      top: -.5rem;
+      left: 1rem;
+      line-height: 1;
+    }
+
+    .letter-box p {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: #b8b4ac;
+      margin-bottom: 1rem;
+    }
+
+    .letter-box .signature {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--future);
+      font-size: 1.1rem;
+      margin-top: 1.5rem;
+    }
+
+    /* ── INTERACTIVE: BREATH BUTTON ── */
+    .breath-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .breath-orb {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110,201,143,.25) 0%, transparent 70%);
+      border: 1px solid rgba(110,201,143,.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      color: var(--future);
+      cursor: pointer;
+      transition: all .3s;
+      position: relative;
+    }
+
+    .breath-orb.breathing {
+      animation: breathe 4s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(110,201,143,.3); }
+      50%       { transform: scale(1.4); box-shadow: 0 0 0 20px rgba(110,201,143,.0); }
+    }
+
+    .breath-text {
+      font-size: .95rem;
+      color: var(--dim);
+      line-height: 1.7;
+      max-width: 380px;
+      transition: color .5s;
+    }
+
+    /* ── CLOSING ── */
+    #closing {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem;
+      position: relative;
+    }
+
+    #closing h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--text);
+      max-width: 600px;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+    }
+
+    #closing h2 em { color: var(--accent); font-style: italic; }
+
+    #closing p {
+      color: var(--dim);
+      font-size: .95rem;
+      line-height: 1.8;
+      max-width: 440px;
+      margin-bottom: 3rem;
+    }
+
+    .nav-dots {
+      position: fixed;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+      z-index: 100;
+    }
+
+    .nav-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      cursor: pointer;
+      transition: all .3s;
+      border: none;
+      outline: none;
+    }
+
+    .nav-dot.active { background: var(--accent); transform: scale(1.4); }
+
+    /* ── PROGRESS BAR ── */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width .1s linear;
+      z-index: 200;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MUSIC PLAYER ── */
+    #music-player {
+      position: fixed;
+      bottom: 1.8rem;
+      left: 1.8rem;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      background: rgba(11,12,16,.85);
+      border: 1px solid var(--muted);
+      backdrop-filter: blur(12px);
+      padding: .65rem 1.1rem .65rem .75rem;
+      border-radius: 40px;
+      transition: border-color .3s;
+    }
+
+    #music-player:hover { border-color: var(--accent); }
+
+    #music-toggle {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+      transition: background .25s, color .25s;
+      flex-shrink: 0;
+    }
+
+    #music-toggle:hover,
+    #music-toggle.playing {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .music-info {
+      display: flex;
+      flex-direction: column;
+      gap: .1rem;
+    }
+
+    .music-title {
+      font-size: .72rem;
+      color: var(--text);
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    .music-sub {
+      font-size: .62rem;
+      color: var(--dim);
+      letter-spacing: .06em;
+    }
+
+    .music-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+      margin-left: .2rem;
+    }
+
+    .music-bars span {
+      width: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    #music-player.active .music-bars span { opacity: 1; }
+
+    #music-player.active .music-bars span:nth-child(1) { animation: bar 1.1s .0s ease-in-out infinite alternate; }
+    #music-player.active .music-bars span:nth-child(2) { animation: bar 1.1s .2s ease-in-out infinite alternate; }
+    #music-player.active .music-bars span:nth-child(3) { animation: bar 1.1s .4s ease-in-out infinite alternate; }
+    #music-player.active .music-bars span:nth-child(4) { animation: bar 1.1s .1s ease-in-out infinite alternate; }
+
+    @keyframes bar {
+      from { height: 3px; }
+      to   { height: 14px; }
+    }
+
+    /* Volume slider */
+    #vol-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 60px;
+      height: 2px;
+      background: var(--muted);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .chapter { padding: 6rem 1.5rem; }
+      .letter-box { padding: 1.5rem; }
+      .nav-dots { display: none; }
+      #music-player { bottom: 1rem; left: 1rem; }
+      #vol-slider { width: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<audio id="bg-music" loop preload="auto">
+  <source src="Multoo.mp3" type="audio/mpeg">
+</audio>
+
+<div id="progress"></div>
+
+<!-- MUSIC PLAYER -->
+<div id="music-player" aria-label="Ambient music player">
+  <button id="music-toggle" title="Play / Pause ambient music" aria-label="Play music">▶</button>
+  <div class="music-info">
+    <span class="music-title">Multo — Cup of Joe</span>
+    <span class="music-sub">now playing &nbsp;·&nbsp; <span id="music-status">paused</span></span>
+  </div>
+  <div class="music-bars">
+    <span style="height:3px"></span>
+    <span style="height:8px"></span>
+    <span style="height:5px"></span>
+    <span style="height:10px"></span>
+  </div>
+  <input id="vol-slider" type="range" min="0" max="1" step="0.01" value="0.45" title="Volume" aria-label="Volume">
+</div>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" aria-label="Section navigation">
+  <button class="nav-dot active" data-target="landing" title="Start"></button>
+  <button class="nav-dot" data-target="present-chapter" title="Now"></button>
+  <button class="nav-dot" data-target="past-chapter" title="Past"></button>
+  <button class="nav-dot" data-target="future-chapter" title="Future"></button>
+  <button class="nav-dot" data-target="closing" title="End"></button>
+</nav>
+
+<!-- ══════════════ LANDING ══════════════ -->
+<section id="landing">
+  <div class="star-field"></div>
+  <div class="landing-content">
+    <p class="eyebrow">A quiet reflection</p>
+    <h1 class="landing-title">Left <em>Behind</em></h1>
+    <p class="landing-sub">Everyone seems to be moving forward. Building something. Becoming someone. And you're still here — watching, waiting, wondering why.</p>
+    <a class="btn-start" href="#present-chapter">Begin the journey ↓</a>
+  </div>
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- ══════════════ PRESENT ══════════════ -->
+<section id="present-chapter" class="chapter">
+  <p class="chapter-label present reveal">Chapter I — Now</p>
+  <h2 class="chapter-heading reveal">The world moves.<br>You <span class="accent-present">stay still.</span></h2>
+  <hr class="divider present reveal">
+
+  <p class="reveal">You open your phone and see another announcement. Someone got promoted. Someone got married. Someone moved to a new city with bright windows and a fresh start. And you close the app feeling more hollow than before you opened it.</p>
+  <p class="reveal">This is the quiet grief that nobody talks about — not losing something you had, but watching others gain things you haven't found yet.</p>
+
+  <p class="reveal" style="color: var(--dim); font-size: .9rem; letter-spacing: .05em; margin-bottom: .5rem;">Which feeling is most familiar right now?</p>
+
+  <div class="mood-picker reveal">
+    <button class="mood-btn" data-mood="invisible">Invisible</button>
+    <button class="mood-btn" data-mood="exhausted">Exhausted</button>
+    <button class="mood-btn" data-mood="jealous">Quietly jealous</button>
+    <button class="mood-btn" data-mood="numb">Just numb</button>
+    <button class="mood-btn" data-mood="hopeful">Trying to hope</button>
+  </div>
+
+  <div class="mood-response reveal" id="mood-response">
+    <em style="color: var(--dim);">Select a feeling above...</em>
+  </div>
+</section>
+
+<!-- ══════════════ PAST ══════════════ -->
+<section id="past-chapter" class="chapter">
+  <p class="chapter-label past reveal">Chapter II — Then</p>
+  <h2 class="chapter-heading reveal">You weren't always <span class="accent-past">this quiet.</span></h2>
+  <hr class="divider past reveal">
+
+  <p class="reveal">There was a version of you that believed things would unfold differently. You had plans, or at least you had the feeling that plans were coming. That something was about to click into place.</p>
+  <p class="reveal">Click a memory below — not yours, but one that might feel familiar.</p>
+
+  <div class="timeline reveal" id="timeline">
+    <div class="tl-item" data-index="0">
+      <p class="tl-year">A few years ago</p>
+      <p class="tl-title">You had a plan.</p>
+      <p class="tl-body">It was vague, maybe. But it felt real. You imagined where you'd be by now — who you'd be with, what you'd have built. The plan didn't ask for a timeline. But the timeline came anyway.</p>
+    </div>
+    <div class="tl-item" data-index="1">
+      <p class="tl-year">Somewhere in between</p>
+      <p class="tl-title">You stopped counting birthdays.</p>
+      <p class="tl-body">Not because you got old, but because each one came with an invisible checklist you hadn't finished. So you started treating them as just another Tuesday, hoping no one would notice the weight you were carrying.</p>
+    </div>
+    <div class="tl-item" data-index="2">
+      <p class="tl-year">More recently</p>
+      <p class="tl-title">A friend moved on.</p>
+      <p class="tl-body">You were happy for them. You genuinely were. But there was a night — just one — where you sat alone and wondered if anyone would ever feel that way about staying close to you. Whether you were someone people move toward, or someone they drift away from.</p>
+    </div>
+    <div class="tl-item" data-index="3">
+      <p class="tl-year">Sometimes still</p>
+      <p class="tl-title">You revisit old conversations.</p>
+      <p class="tl-body">Messages you didn't send. Opportunities you let pass. Nights where you chose to stay in, and mornings where you wished you hadn't. You turn them over like stones, not sure what you're looking for.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FUTURE ══════════════ -->
+<section id="future-chapter" class="chapter">
+  <p class="chapter-label future reveal">Chapter III — After</p>
+  <h2 class="chapter-heading reveal">What if <span class="accent-future">slow</span><br>is not the same as <span class="accent-future">lost?</span></h2>
+  <hr class="divider future reveal">
+
+  <p class="reveal">Not every story moves at the same pace. Some novels have a slow first act that makes the ending feel earned in a way fast books never could. That might be you. You might be in the slow first act.</p>
+  <p class="reveal">There's a letter waiting for you below — written by a version of you that made it through. Read it when you're ready.</p>
+
+  <div class="letter-box reveal" id="letter-box" style="cursor:pointer;">
+    <p style="color: var(--dim); font-style: italic; font-size: .85rem;">Click to open the letter →</p>
+  </div>
+
+  <div class="breath-area reveal">
+    <p style="color: var(--dim); font-size: .85rem; letter-spacing: .05em;">When it gets too heavy — try this:</p>
+    <div style="display:flex; align-items:center; gap: 1.5rem; flex-wrap: wrap;">
+      <div class="breath-orb" id="breath-orb">hold</div>
+      <p class="breath-text" id="breath-text" style="margin:0;">Press the circle and breathe with it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CLOSING ══════════════ -->
+<section id="closing">
+  <h2 class="reveal">You haven't been left behind.<br>You've been <em>gathering yourself.</em></h2>
+  <p class="reveal">Loneliness is not a verdict. It's a season. And seasons, no matter how long they stretch, eventually turn.</p>
+  <p class="reveal" style="color: var(--accent); font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem;">You are still here. That is not nothing.</p>
+</section>
+
+<script>
+  // ── PROGRESS BAR ──
+  const bar = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        const delay = Array.from(e.target.parentElement.children)
+          .filter(c => c.classList.contains('reveal'))
+          .indexOf(e.target) * 80;
+        setTimeout(() => e.target.classList.add('visible'), delay);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
+
+  // ── NAV DOTS ──
+  const sections = ['landing','present-chapter','past-chapter','future-chapter','closing'];
+  const dots = document.querySelectorAll('.nav-dot');
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      document.getElementById(sections[i]).scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  const sectionEls = sections.map(id => document.getElementById(id));
+  const dotObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const idx = sectionEls.indexOf(e.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.5 });
+  sectionEls.forEach(el => dotObserver.observe(el));
+
+  // ── MOOD PICKER ──
+  const moodResponses = {
+    invisible: "To feel invisible is one of the loneliest things — not to be disliked, but to be overlooked. To speak and feel unheard. To exist in a room and not leave a dent. But invisibility is not the same as insignificance. You are seen, even when it doesn't feel that way.",
+    exhausted: "You've been carrying something heavy for a long time. Not just today's weight, but all the accumulated weight of days when you tried and nothing quite worked. Rest is not failure. Stopping to breathe is not giving up. You are allowed to be tired.",
+    jealous: "Quiet jealousy is painful precisely because it comes with guilt attached. You don't want to feel it. But it's honest. It means you still want things. Still care. The wanting hasn't gone away — and that's actually a sign that you're still alive in there.",
+    numb: "Numbness is what happens when feelings become too much to process all at once. It's a kind of protection. But underneath it, something is still there — still warm, still waiting. You haven't stopped feeling. You've just paused.",
+    hopeful: "Even a small hope is enormous. The fact that some part of you is still reaching — still looking for a sign that things could be different — is extraordinary. Hold onto that. It's the most honest thing you have right now."
+  };
+
+  document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const box = document.getElementById('mood-response');
+      box.style.opacity = '0';
+      setTimeout(() => {
+        box.textContent = moodResponses[btn.dataset.mood];
+        box.style.opacity = '1';
+      }, 250);
+      box.style.transition = 'opacity .4s ease';
+    });
+  });
+
+  // ── TIMELINE ──
+  document.querySelectorAll('.tl-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.tl-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // ── LETTER ──
+  const letterLines = [
+    "Hey — it's you. A version of you that stood exactly where you're standing now and somehow found a way through.",
+    "I know it feels like everyone has figured something out that you haven't. Like there's a script everyone else was handed and yours got lost in the mail.",
+    "But here's what I want you to know: the loneliness you're carrying right now — it isn't a reflection of your worth. It's a reflection of how deeply you feel things. That's rare. That's actually precious.",
+    "The things that feel like delays are sometimes redirections you can't see from where you're standing.",
+    "You will find your people. Not the ones you were supposed to have, but the ones meant for the actual you — not the performance of you.",
+    "Don't rush yourself into someone else's timeline."
+  ];
+
+  let letterOpened = false;
+  document.getElementById('letter-box').addEventListener('click', () => {
+    if (letterOpened) return;
+    letterOpened = true;
+    const box = document.getElementById('letter-box');
+    box.innerHTML = '';
+    box.style.cursor = 'default';
+    let delay = 0;
+    letterLines.forEach((line, i) => {
+      const p = document.createElement('p');
+      p.textContent = line;
+      p.style.opacity = '0';
+      p.style.transition = 'opacity .6s ease';
+      box.appendChild(p);
+      setTimeout(() => { p.style.opacity = '1'; }, delay);
+      delay += 700;
+    });
+    const sig = document.createElement('p');
+    sig.className = 'signature';
+    sig.textContent = '— You, later.';
+    sig.style.opacity = '0';
+    sig.style.transition = 'opacity .6s ease';
+    box.appendChild(sig);
+    setTimeout(() => { sig.style.opacity = '1'; }, delay);
+  });
+
+  // ── BREATH ORB ──
+  const orb = document.getElementById('breath-orb');
+  const breathText = document.getElementById('breath-text');
+  let breathing = false;
+  let breathInterval;
+  const phases = ['Breathe in...', 'Hold...', 'Breathe out...', 'Rest...'];
+  let phaseIdx = 0;
+
+  orb.addEventListener('click', () => {
+    breathing = !breathing;
+    if (breathing) {
+      orb.classList.add('breathing');
+      orb.textContent = '';
+      breathText.style.color = 'var(--future)';
+      breathText.textContent = phases[0];
+      phaseIdx = 0;
+      breathInterval = setInterval(() => {
+        phaseIdx = (phaseIdx + 1) % 4;
+        breathText.textContent = phases[phaseIdx];
+      }, 4000);
+    } else {
+      orb.classList.remove('breathing');
+      orb.textContent = 'hold';
+      breathText.style.color = '';
+      breathText.textContent = 'Press the circle and breathe with it.';
+      clearInterval(breathInterval);
+    }
+  });
+  // ── MUSIC PLAYER (Multoo.mp3) ──
+  (function() {
+    const audio = document.getElementById('bg-music');
+    const btn   = document.getElementById('music-toggle');
+    const player = document.getElementById('music-player');
+    const status = document.getElementById('music-status');
+    const vol    = document.getElementById('vol-slider');
+
+    audio.volume = +vol.value;
+
+    function setPlaying(state) {
+      if (state) {
+        audio.play().catch(() => {});
+        btn.textContent = '⏸';
+        btn.classList.add('playing');
+        player.classList.add('active');
+        status.textContent = 'playing';
+        btn.setAttribute('aria-label', 'Pause music');
+      } else {
+        audio.pause();
+        btn.textContent = '▶';
+        btn.classList.remove('playing');
+        player.classList.remove('active');
+        status.textContent = 'paused';
+        btn.setAttribute('aria-label', 'Play music');
+      }
+    }
+
+    // Auto-play when "Begin the Journey" is clicked
+    document.querySelector('.btn-start').addEventListener('click', () => {
+      setPlaying(true);
+    });
+
+    // Toggle button
+    btn.addEventListener('click', () => {
+      setPlaying(audio.paused);
+    });
+
+    // Volume slider
+    vol.addEventListener('input', () => {
+      audio.volume = +vol.value;
+    });
+  })();
+</script>
+</body>
+</html>
